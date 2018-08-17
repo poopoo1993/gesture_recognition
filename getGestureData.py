@@ -1,6 +1,6 @@
 import cv2
 import os
-
+import numpy as np
 #create folder to save the image set to train
 def createDir(gesture_name):
 	if not os.path.exists("gesture"):
@@ -23,7 +23,7 @@ while True:
 	while True:
 		ret, frame = cap.read()
 		image = cv2.flip(frame, 1)
-		image = cv2.rectangle(image, (100, 100), (400, 400), (255,0,0), 2)
+		image = cv2.rectangle(image, (50, 50), (350, 350), (255,0,0), 2)
 		cv2.imshow(gesture_name,image)
 	
 		commond = cv2.waitKey(1)
@@ -31,7 +31,10 @@ while True:
 		if commond == 27:
 			break
 		elif commond == 32:
-			gesture = image[100:400, 100:400]
+			gesture = image[50:350, 50:350]
+			gesture = cv2.addWeighted(gesture,1 , 
+									np.zeros(gesture.shape, gesture.dtype), 
+									0 ,-25*(counter%5)) 
 			cv2.imwrite("gesture/" + gesture_name + "/" + 
 						gesture_name +"_" + str(counter) + ".jpg", gesture)
 			print("get gesture " + str(counter))
@@ -41,7 +44,6 @@ while True:
 		
 	if input("Do you want to add another gesture?(y/n)") == 'y':
 		cv2.destroyAllWindows()	
-
 	else:
 		break
 	
